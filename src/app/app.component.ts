@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+// decarators
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
