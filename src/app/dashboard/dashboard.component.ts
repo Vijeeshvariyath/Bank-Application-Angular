@@ -1,3 +1,4 @@
+import { JsonpClientBackend } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -44,17 +45,24 @@ lDate:any
 
 
   constructor(private ds:DataService,private fb:FormBuilder,private router:Router) { 
-    this.user=this.ds.currentUsername
+    if(localStorage.getItem('currentUsername')){
+
+
+//fetch username from localstorage
+this.user=JSON.parse(localStorage.getItem('currentUsername') || '')
+
+    }
+    
     this.lDate=new Date()
   }
 
   ngOnInit(): void {
 
-    if(!localStorage.getItem('currentAcno')){
-alert("Please login")
-this.router.navigateByUrl("")
+     if(!localStorage.getItem('token')){
+  alert("Please login")
+ this.router.navigateByUrl("")
 
-    }
+     }
 
   }
 
@@ -68,18 +76,19 @@ this.router.navigateByUrl("")
     var amount=this.dashForm.value.amount
 
     if(this.dashForm.valid){
-      const result = this.ds.deposit(acno,pswd,amount)
-      if(result){
-        alert(`${amount} deposited sucessfully and new balance is ${result}`)
+      
+     this.ds.deposit(acno,pswd,amount)
+     .subscribe(
+      (result:any)=>{
+     alert(result.message)
+      },
+      result=>{
+        alert(result.error.message)
       }
-
+     )      
     }else{
       alert("Invalid form")
     }
-   
-
-
-
   }
 
 
@@ -94,11 +103,16 @@ withdraw(){
   let amount=this.withdrawForm.value.amount1
 
   if(this.withdrawForm.valid){
-    const result = this.ds.withdraw(acno,pswd,amount)
-
- if(result){
-  alert(`${amount} debited sucessfully and new balance is ${result}`)
- }
+     this.ds.withdraw(acno,pswd,amount)
+    .subscribe(
+      (result:any)=>{
+     alert(result.message)
+      },
+      result=>{
+        alert(result.error.message)
+      }
+     )      
+ 
 
   }else{
     alert("Invalid form")
@@ -113,6 +127,8 @@ logout(){
   //remove login acno.username
   localStorage.removeItem('currentAcno')
   localStorage.removeItem('currentUsername')
+  localStorage.removeItem('token')
+
 
   //navigate to login
   this.router.navigateByUrl("")
@@ -132,5 +148,21 @@ deleteparent(){
 cancel(){
   this.acno=""
 }
+
+// ondelete
+
+onDelete(event:any){
+  this.ds.delete(event)
+  .subscribe(
+    (result:any)=>{
+      alert(result.message)
+      this.logout()
+    },
+    result=>{
+      alert(result.error.message)
+    }
+  )
+}
+
 
 }

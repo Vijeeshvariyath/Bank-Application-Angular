@@ -116,15 +116,23 @@ login(){
     var pswd=this.loginForm.value.pswd
 
     if(this.loginForm.valid){
-      const result = this.ds.login(acno,pswd)
-  
-      if(result){
-    
-        alert("Login sucessfull")
-          this.router.navigateByUrl('dashboard')
-      }
-    
-      
+ this.ds.login(acno,pswd)
+ .subscribe(
+  (result:any)=>{
+
+    localStorage.setItem('currentUsername',JSON.stringify(result.currentUsername))
+    localStorage.setItem('currentAcno',JSON.stringify(result.currentAcno))
+    localStorage.setItem('token',JSON.stringify(result.token))
+
+
+
+    alert(result.message)
+    this.router.navigateByUrl("dashboard")
+  },
+  result=>{
+    alert(result.error.message)
+  }
+ )      
   }else{
     alert("Invalid form")
   }

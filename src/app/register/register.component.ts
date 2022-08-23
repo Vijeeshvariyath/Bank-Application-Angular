@@ -48,26 +48,23 @@ export class RegisterComponent implements OnInit {
 
 
 if(this.registerForm.valid){
-  // call register in dataservice
+  // call register in dataservice - asynchronous
 
   const result=this.ds.register(acno,pswd,uname)
-
-  if(result){
-    alert("Sucessfully register")
-    this.router.navigateByUrl("")
-  }else{
-    alert("User already exist")
-    this.router.navigateByUrl("")
-  }
-
+  .subscribe((result:any)=>{
+    if(result){
+      alert(result.message)
+      this.router.navigateByUrl("")
+    }
+  },
+     result=>{
+      alert(result.error.message)
+      this.router.navigateByUrl("")    
+  })
 }
 else{
-  alert("Invalid form")
+  alert("Invalid form") 
 }
-
-    
-
-
   }
-
 }
+ 

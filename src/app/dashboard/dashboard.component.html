@@ -16,7 +16,7 @@
 
   
   <!-- delete confirm child -->
-  <app-deleteconfirm (onCancel)="cancel()" [item]="acno"></app-deleteconfirm>
+  <app-deleteconfirm (onDelete)="onDelete($event)" (onCancel)="cancel()" [item]="acno"></app-deleteconfirm>
 
   <div [ngClass]="acno? 'style1': '' " class="container col-md-12 mt-0">
       <div class="d-flex justify-content-center h-100">
